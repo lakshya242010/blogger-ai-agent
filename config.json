@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "mode": "draft",
+  "niche": "Historical stories: bharat aur duniya ki itihaas ki kahaniyan aur mahan logon ki jeevni",
+  "language": "Hinglish (Roman Hindi + English)",
+  "tone": "friendly, simple, beginner-friendly",
+  "word_count": 900,
+  "slots": [
+    { "time": "09:00", "focus": "latest AI/tech news" },
+    { "time": "14:00", "focus": "how-to guide ya tutorial" },
+    { "time": "19:00", "focus": "tools ya apps ka review" }
+  ]
+}

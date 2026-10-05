@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "1. Check",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/agent.py",
+      "args": ["--check"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "2. Dry-run",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/agent.py",
+      "args": ["--dry-run"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "3. Now",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/agent.py",
+      "args": ["--now"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

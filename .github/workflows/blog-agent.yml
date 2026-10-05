@@ -1,0 +1,60 @@
+# Autonomous blogging agent - har 15 minute me chalta hai.
+#
+# Dhyan rakho:
+#  - GitHub ka cron 5 se 20 minute late chalta hai. Isliye agent har run me
+#    config.json ke "due" slots dekhta hai aur 6 ghante ka grace window rakhta hai.
+#  - PRIVATE repo me free Actions minutes limited hote hain (lagbhag 2000/month).
+#    Aapke liye cron ko '*/30 * * * *' kar do. PUBLIC repo me Actions free hai,
+#    to '*/15 * * * *' as it is chhod sakte ho.
+
+name: Blog Agent
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Do runs kabhi ek saath na chalein (state.json safe rahega).
+concurrency:
+  group: blog-agent
+  cancel-in-progress: false
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run agent (due slots post karo)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+        run: python scripts/agent.py
+
+      - name: Commit state.json (sirf tabhi jab badla ho)
+        run: |
+          git config user.name "blog-agent"
+          git config user.email "blog-agent@users.noreply.github.com"
+          git add state.json
+          if git diff --staged --quiet -- state.json; then
+            echo "state.json me koi change nahi - kuch push karne ko nahi hai."
+          else
+            git commit -m "state.json update by blog-agent"
+            git push
+          fi
